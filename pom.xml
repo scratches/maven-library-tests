@@ -9,8 +9,8 @@
 	<name>Parent Demo</name>
 
 	<modules>
-		<module>app</module>
 		<module>module</module>
+		<module>app</module>
 	</modules>
 
 	<properties>
