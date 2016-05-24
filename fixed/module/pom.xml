@@ -39,7 +39,9 @@
 		<profile>
 			<id>spring</id>
 			<activation>
-				<activeByDefault>true</activeByDefault>
+				<property>
+					<name>!skip-spring</name>
+				</property>
 			</activation>
 			<repositories>
 				<repository>
