@@ -26,8 +26,31 @@ completely random dependencies (e.g. arquillian).
 
 The `boot` and `broken` ones bind to `repo.spring.io`, and the `fixed`
 one does not. The difference between `broken` and `fixed` is only the
-version of Maven (3.2.3 instead of 3.3.3). The `boot` project also
-uses Maven 3.3.3, so it's a bit of a mystery still why that is broken
-(but it's something in Spring Boot). Spring Boot 1.3.5.RELEASE has a
-profile called "default" in `spring-boot-parent` which defines
-repositories, so maybe this is the culprit.
+version of Maven (3.2.3 instead of 3.3.3).
+
+## Hiding Repositories in a Profile
+
+The `boot` project also uses Maven 3.3.3 and it works fine as long as
+the environment is clean (no `local-settings.xml` no wrapper
+properties etc.). Spring Boot 1.3.5.RELEASE has a profile called
+"default" in `spring-boot-parent` which defines repositories, and it
+isn't exposing them to the `app` project. But using a profile that is
+active by default is a bad idea because it is de-activated by any
+other explicitly activated profile. There's a trick you can play to
+use a profile, but not have it accidentally deactivated: activate it
+only if a property is not false:
+
+```
+<profile>
+	<id>spring</id>
+	<activation>
+		<property>
+			<name>!skip-spring</name>
+		</property>
+	</activation>
+...
+```
+
+The user can opt out by calling `./mvnw install -Dskip-spring=false`,
+and otherwise it is active in the build of this project, but not
+projects that depend on this one.
